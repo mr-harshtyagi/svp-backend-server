@@ -1,0 +1,16 @@
+{
+  "name": "svp-local-server",
+  "version": "1.0.0",
+  "description": "This is local server to get data from sensors connected to RaspPi",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
