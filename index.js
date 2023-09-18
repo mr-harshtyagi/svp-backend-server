@@ -1,21 +1,19 @@
 // express server with routes
 import express from "express";
+import { Server } from "socket.io";
+import { createServer } from "node:http";
+
 const app = express();
+const server = createServer(app);
 const port = 3000;
+const io = new Server(server);
+
 // import routes
 import index from "./routes/index.js";
 
-import { WebSocketServer } from "ws";
-const wss = new WebSocketServer({ port: 8080 });
-
 // websocket server
-wss.on("connection", function connection(ws) {
-  // receive message from client
-  ws.on("message", function message(data) {
-    console.log("received: %s", data);
-  });
-  // send message to client
-  ws.send("something");
+io.on("connection", (socket) => {
+  console.log("a user connected");
 });
 
 // use routes
