@@ -1,10 +1,22 @@
 // express server with routes
-const express = require("express");
+import express from "express";
 const app = express();
 const port = 3000;
-
 // import routes
-const index = require("./routes/index");
+import index from "./routes/index.js";
+
+import { WebSocketServer } from "ws";
+const wss = new WebSocketServer({ port: 8080 });
+
+// websocket server
+wss.on("connection", function connection(ws) {
+  // receive message from client
+  ws.on("message", function message(data) {
+    console.log("received: %s", data);
+  });
+  // send message to client
+  ws.send("something");
+});
 
 // use routes
 app.use("/", index);
