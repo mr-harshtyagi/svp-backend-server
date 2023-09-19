@@ -6,3 +6,5 @@ Libraries used:
 
 - ws
 - express
+
+Conventional commits
