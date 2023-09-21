@@ -10,6 +10,8 @@ const io = new Server(server);
 
 // import routes
 import index from "./routes/index.js";
+import ledOn from "./routes/led-on.js";
+import ledOff from "./routes/led-off.js";
 
 // websocket server
 io.on("connection", (socket) => {
@@ -18,6 +20,9 @@ io.on("connection", (socket) => {
 
 // use routes
 app.use("/", index);
+
+app.get("/led-on", ledOn);
+app.get("/led-off", ledOff);
 
 // start server
 app.listen(port, () => {
