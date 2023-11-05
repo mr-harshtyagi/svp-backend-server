@@ -1,4 +1,3 @@
-// // Path: routes/index.js
 // import express from "express";
 // const router = express.Router();
 // import { Gpio } from "pigpio";
@@ -16,9 +15,9 @@
 // //   }
 // // }, 20);
 
-// router.get("/led-on", (req, res) => {
+// router.get("/accelerometer", (req, res) => {
 //   led.pwmWrite(255);
-//   res.send({ response: "Led in ON" }).status(200);
+//   res.send({ response: "Here is accelerometer data" }).status(200);
 // });
 
 // export default router;
