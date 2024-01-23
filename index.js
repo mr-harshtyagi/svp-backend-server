@@ -5,7 +5,7 @@ import { createServer } from "node:http";
 
 const app = express();
 const server = createServer(app);
-const port = 3000;
+const port = 4000;
 const io = new Server(server);
 
 // import routes

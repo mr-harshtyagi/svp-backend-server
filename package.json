@@ -1,19 +1,18 @@
 {
-  "name": "svp-local-server",
+  "name": "svp-backend-server",
   "version": "1.0.0",
   "description": "This is local server to get data from sensors connected to RaspPi",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
+    "start": "PORT=4000 node index.js",
     "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
-    "socket.io": "^4.7.2",
-    "ws": "^8.13.0"
+    "socket.io": "^4.7.2"
   }
 }
