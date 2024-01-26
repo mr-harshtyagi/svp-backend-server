@@ -20,6 +20,22 @@ io.on("connection", (socket) => {
     // Handle the message here
   });
 
+  // Handle messages from the client
+  socket.on("data", (message) => {
+    // const data = JSON.parse(message);
+    console.log("Received message data:", message);
+
+    // After handling the message, you can send a response back to the client
+    const responseData = {
+      status: "success",
+      mrValue: Math.random(),
+      smaValue: Math.random(),
+      motorSpeed: Math.random(),
+    };
+    socket.emit("dataResponse", responseData);
+    // Handle the message here
+  });
+
   socket.on("test", (message) => {
     console.log("Received data from Raspberry Pi:", message);
     // Handle the message here
