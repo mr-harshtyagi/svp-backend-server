@@ -44,7 +44,6 @@ io.on("connection", (socket) => {
   socket.on("clientMessage", (message) => {
     console.log("Received message from client:", message);
     // Handle the message here
-
     const responseMessage = `Server received your message: ${message}`;
     socket.emit("serverMessage", responseMessage);
   });
