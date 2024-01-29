@@ -31,14 +31,14 @@ io.on("connection", (socket) => {
   console.log("A client connected");
 
   // Periodically send data to the client (every 5 seconds in this example)
-  // const dataInterval = setInterval(() => {
-  //   const responseData = generateRandomData();
-  //   socket.emit("dataUpdate", responseData);
-  // }, 5000);
+  const dataInterval = setInterval(() => {
+    const responseData = generateRandomData();
+    socket.emit("dataUpdate", responseData);
+  }, 1000);
 
   // Send data to the client once when it connects
-  const responseData = generateRandomData();
-  socket.emit("dataUpdate", responseData);
+  // const responseData = generateRandomData();
+  // socket.emit("dataUpdate", responseData);
 
   // Handle messages from the client
   socket.on("clientMessage", (message) => {
