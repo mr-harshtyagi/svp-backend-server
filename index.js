@@ -16,35 +16,41 @@ const io = socketIo(server, {
   },
 });
 
+let mrValue = 0;
+let smaValue = 0;
+let motorSpeed = 0;
+
 // Function to generate random data
 function generateRandomData() {
   return {
     status: "success",
-    mrValue: Math.random(),
-    smaValue: Math.random(),
-    motorSpeed: Math.random(),
+    mrValue: mrValue,
+    smaValue: smaValue,
+    motorSpeed: motorSpeed,
+    temp: 50 + Math.floor(Math.random() * 20),
+    acc: Math.floor(Math.random() * 21) - 10,
   };
 }
 
 // Websocket connection
 io.on("connection", (socket) => {
-  console.log("A client connected");
+  console.log("A client connected", socket.id);
 
   // Periodically send data to the client (every 5 seconds in this example)
   const dataInterval = setInterval(() => {
     const responseData = generateRandomData();
     socket.emit("dataUpdate", responseData);
-  }, 2000);
-
-  // Send data to the client once when it connects
-  // const responseData = generateRandomData();
-  // socket.emit("dataUpdate", responseData);
+  }, 100);
 
   // Handle messages from the client
   socket.on("clientMessage", (message) => {
     console.log("Received message from client:", message);
+
+    mrValue = message.mrValue;
+    smaValue = message.smaValue;
+    motorSpeed = message.motorSpeed;
     // Handle the message here
-    const responseMessage = `Server received your message: ${message}`;
+    // const responseMessage = `Server received your message: ${message}`;
     // socket.emit("serverMessage", responseMessage);
   });
 
@@ -61,7 +67,7 @@ server.listen(PORT, () => {
 
 // Place your route definitions here, after the CORS middleware
 app.get("/", (req, res) => {
-  res.send("I am alive!");
+  res.send("SVP server is online!");
 });
 
 //Harsh's code
