@@ -34,7 +34,7 @@ io.on("connection", (socket) => {
   const dataInterval = setInterval(() => {
     const responseData = generateRandomData();
     socket.emit("dataUpdate", responseData);
-  }, 1000);
+  }, 2000);
 
   // Send data to the client once when it connects
   // const responseData = generateRandomData();
