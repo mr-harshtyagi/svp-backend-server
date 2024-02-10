@@ -12,8 +12,8 @@ const io = socketIo(server, {
   cors: {
     origin: [
       "http://localhost:3000",
-      "https://svp.smsl.online/",
-      "https://www.svp.smsl.online/",
+      "https://svp.smsl.online",
+      "https://www.svp.smsl.online",
     ],
     methods: ["GET", "POST"],
     credentials: true,
