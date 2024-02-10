@@ -10,7 +10,7 @@ const server = http.createServer(app);
 const PORT = 4000;
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://svp.smsl.online/"],
     methods: ["GET", "POST"],
     credentials: true,
   },
