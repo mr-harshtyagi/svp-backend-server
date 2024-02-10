@@ -19,9 +19,11 @@ const io = socketIo(server, {
 let mrValue = 0;
 let smaValue = 0;
 let motorSpeed = 0;
+let temp = 75;
+let acc = 0;
 
-// Function to generate random data
-function generateRandomData() {
+// Function to return actual data received from the raspberry pi
+function getActualData() {
   return {
     status: "success",
     mrValue: mrValue,
@@ -32,13 +34,27 @@ function generateRandomData() {
   };
 }
 
+// Function to generate random data
+function getRandomData() {
+  let status = temp > 80 ? (temp > 90 ? "overheat" : "warning") : "healthy";
+  return {
+    status: status,
+    mrValue: mrValue,
+    smaValue: smaValue,
+    motorSpeed: motorSpeed,
+    temp: 50 + Math.floor(Math.random() * 20),
+    // temp: temp,
+    acc: Math.floor(Math.random() * 21) - 10,
+  };
+}
+
 // Websocket connection
 io.on("connection", (socket) => {
   console.log("A client connected", socket.id);
 
   // Periodically send data to the client (every 5 seconds in this example)
   const dataInterval = setInterval(() => {
-    const responseData = generateRandomData();
+    const responseData = getRandomData();
     socket.emit("dataUpdate", responseData);
   }, 100);
 
@@ -57,10 +73,6 @@ io.on("connection", (socket) => {
   // Handle messages from the raspberry pi
   socket.on("raspPiMessage", (message) => {
     console.log("Received message from client:", message);
-
-    mrValue = message.mrValue;
-    smaValue = message.smaValue;
-    motorSpeed = message.motorSpeed;
   });
 
   // Handle disconnection
