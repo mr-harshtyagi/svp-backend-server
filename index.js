@@ -54,6 +54,10 @@ function getRandomData() {
 
 // Websocket connection
 io.on("connection", (socket) => {
+  // limit the number of connections
+  if (io.engine.clientsCount > 1) {
+    socket.disconnect();
+  }
   console.log("A client connected", socket.id);
 
   // Periodically send data to the client (every 5 seconds in this example)
