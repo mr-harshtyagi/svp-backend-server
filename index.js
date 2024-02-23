@@ -75,13 +75,6 @@ io.on("connection", (socket) => {
     mrValue = message.mrValue;
     smaValue = message.smaValue;
     motorSpeed = message.motorSpeed;
-
-    // Send a response to raspberry pi to update values after receiving the message from the frontend
-    // socket.emit("serverResponse", {
-    //   mrValue: mrValue,
-    //   smaValue: smaValue,
-    //   motorSpeed: motorSpeed,
-    // });
   });
 
   // Handle messages from the raspberry pi
@@ -89,14 +82,17 @@ io.on("connection", (socket) => {
     console.log("Received message from Rasp Pi:", message);
     temp = message.temp;
     acc = message.acc;
-    console.log("Current mrValue", message.mrValue);
-    console.log("Current smaValue", message.smaValue);
-    console.log("Current motorSpeed", message.motorSpeed);
-    socket.emit("serverResponse", {
-      mrValue: mrValue,
-      smaValue: smaValue,
-      motorSpeed: motorSpeed,
-    });
+    if (
+      message.mrValue !== mrValue ||
+      message.smaValue !== smaValue ||
+      message.motorSpeed !== motorSpeed
+    ) {
+      socket.emit("serverResponse", {
+        mrValue: mrValue,
+        smaValue: smaValue,
+        motorSpeed: motorSpeed,
+      });
+    }
   });
 
   // Handle disconnection
