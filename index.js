@@ -98,6 +98,10 @@ io.on("connection", (socket) => {
   // Handle disconnection
   socket.on("disconnect", () => {
     console.log("A client disconnected");
+    clearInterval(dataInterval);
+    mrValue = 0;
+    smaValue = 0;
+    motorSpeed = 0;
   });
 });
 
