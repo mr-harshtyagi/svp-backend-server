@@ -77,7 +77,11 @@ io.on("connection", (socket) => {
     motorSpeed = message.motorSpeed;
 
     // Send a response to raspberry pi to update values after receiving the message from the frontend
-    socket.emit("serverResponse", { mrValue, smaValue, motorSpeed });
+    socket.emit("serverResponse", {
+      mrValue: mrValue,
+      smaValue: smaValue,
+      motorSpeed: motorSpeed,
+    });
   });
 
   // Handle messages from the raspberry pi
