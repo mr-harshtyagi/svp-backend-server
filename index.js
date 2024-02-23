@@ -24,7 +24,7 @@ const io = socketIo(server, {
 let mrValue = 0;
 let smaValue = 0;
 let motorSpeed = 0;
-let temp = 75;
+let temp = 25;
 let acc = 0;
 
 // Function to return actual data received from the raspberry pi
