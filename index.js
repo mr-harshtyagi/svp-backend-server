@@ -30,50 +30,55 @@ let acc = 0;
 // Function to return actual data received from the raspberry pi
 function getActualData() {
   return {
-    status: "success",
+    status: "healthy",
     mrValue: mrValue,
     smaValue: smaValue,
     motorSpeed: motorSpeed,
-    temp: 50 + Math.floor(Math.random() * 20),
-    acc: Math.floor(Math.random() * 21) - 10,
+    temp: temp,
+    acc: acc,
   };
 }
 
 // Function to generate random data
 function getRandomData() {
   let status = temp > 80 ? (temp > 90 ? "overheat" : "warning") : "healthy";
-  return {
-    status: status,
-    mrValue: mrValue,
-    smaValue: smaValue,
-    motorSpeed: motorSpeed,
-    temp: 50 + Math.floor(Math.random() * 20),
-    // temp: temp,
-    acc: Math.floor(Math.random() * 21) - 10,
-  };
+  // return {
+  //   status: status,
+  //   mrValue: mrValue,
+  //   smaValue: smaValue,
+  //   motorSpeed: motorSpeed,
+  //   temp: 50 + Math.floor(Math.random() * 20),
+  //   // temp: temp,
+  //   acc: Math.floor(Math.random() * 21) - 10,
+  // };
+  return getActualData();
 }
 
 // Websocket connection
 io.on("connection", (socket) => {
   // limit the number of connections
-  if (io.engine.clientsCount > 1) {
+  if (io.engine.clientsCount > 2) {
     socket.disconnect();
   }
   console.log("A client connected", socket.id);
 
-  // Periodically send data to the client (every 5 seconds in this example)
+  // Periodically send data to the client
   const dataInterval = setInterval(() => {
     const responseData = getRandomData();
     socket.emit("dataUpdate", responseData);
   }, 100);
 
-  // Handle messages from the client
+  // Handle messages from the client i.e. the frontend
   socket.on("clientMessage", (message) => {
-    console.log("Received message from client:", message);
+    console.log("Received message from frontend client:", message);
 
     mrValue = message.mrValue;
     smaValue = message.smaValue;
     motorSpeed = message.motorSpeed;
+
+    // Send a message to raspberry pi to update values
+    socket.emit("serverMessage", { mrValue, smaValue, motorSpeed });
+
     // Handle the message here
     // const responseMessage = `Server received your message: ${message}`;
     // socket.emit("serverMessage", responseMessage);
@@ -81,7 +86,12 @@ io.on("connection", (socket) => {
 
   // Handle messages from the raspberry pi
   socket.on("raspPiMessage", (message) => {
-    console.log("Received message from client:", message);
+    console.log("Received message from Rasp Pi:", message);
+    temp = message.temp;
+    acc = message.acc;
+    console.log("Current mrValue", message.mrValue);
+    console.log("Current smaValue", message.smaValue);
+    console.log("Current motorSpeed", message.motorSpeed);
   });
 
   // Handle disconnection
