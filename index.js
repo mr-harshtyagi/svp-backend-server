@@ -57,7 +57,7 @@ function getRandomData() {
 // Websocket connection
 io.on("connection", (socket) => {
   // limit the number of connections
-  if (io.engine.clientsCount > 2) {
+  if (io.engine.clientsCount > 3) {
     socket.disconnect();
   }
   console.log("A client connected", socket.id);
