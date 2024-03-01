@@ -66,7 +66,7 @@ io.on("connection", (socket) => {
   const dataInterval = setInterval(() => {
     const responseData = getRandomData();
     socket.emit("dataUpdate", responseData);
-  }, 100);
+  }, 10);
 
   // Handle messages from the client i.e. the frontend
   socket.on("clientMessage", (message) => {
