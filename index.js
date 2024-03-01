@@ -79,7 +79,7 @@ io.on("connection", (socket) => {
 
   // Handle messages from the raspberry pi
   socket.on("raspPiMessage", (message) => {
-    console.log("Received message from Rasp Pi:", message);
+    // console.log("Received message from Rasp Pi:", message);
     temp = message.temp;
     acc = message.acc;
     if (
