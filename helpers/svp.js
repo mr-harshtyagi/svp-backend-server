@@ -48,11 +48,11 @@ function svpSocket(io) {
     // Periodically send data to the client
     const dataInterval = setInterval(() => {
       const responseData = getRandomData();
-      socket.emit("dataUpdate", responseData);
+      socket.emit("svpDataUpdate", responseData);
     }, 100);
 
     // Handle messages from the client i.e. the frontend (SVP)
-    socket.on("clientMessage", (message) => {
+    socket.on("svpClientMessage", (message) => {
       console.log("Received message from frontend client:", message);
 
       mrValue = message.mrValue;
@@ -61,7 +61,7 @@ function svpSocket(io) {
     });
 
     // Handle messages from the raspberry pi (SVP)
-    socket.on("raspPiMessage", (message) => {
+    socket.on("svpRaspPiMessage", (message) => {
       // console.log("Received message from Rasp Pi:", message);
       temp = message.temp;
       acc = message.acc;
@@ -70,7 +70,7 @@ function svpSocket(io) {
         message.smaValue !== smaValue ||
         message.motorSpeed !== motorSpeed
       ) {
-        socket.emit("serverResponse", {
+        socket.emit("svpServerResponse", {
           mrValue: mrValue,
           smaValue: smaValue,
           motorSpeed: motorSpeed,

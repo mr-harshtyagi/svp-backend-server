@@ -4,6 +4,7 @@ const socketIo = require("socket.io");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const { svpSocket } = require("./helpers/svp");
+const { svbSocket } = require("./helpers/svb");
 
 // Set up rate limiter: maximum of 100 requests per minute
 const limiter = rateLimit({
@@ -35,6 +36,7 @@ const io = socketIo(server, {
 svpSocket(io);
 
 // Initiate SVP experiment - TO DO
+// svbSocket(io);
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
