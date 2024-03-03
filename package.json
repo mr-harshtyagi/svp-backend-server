@@ -1,7 +1,7 @@
 {
-  "name": "svp-backend-server",
+  "name": "smsl-backend-server",
   "version": "1.0.0",
-  "description": "This is local server to get data from sensors connected to RaspPi",
+  "description": "This is cloud server for IoT experiments and projects under SMSL  lab",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
