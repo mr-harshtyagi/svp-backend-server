@@ -8,6 +8,9 @@ let motorSpeed = 0;
 let temp = 25;
 let acc = 0;
 
+// connections count
+let experimentServers = 0;
+
 // Function to return actual data received from the raspberry pi
 function getActualData() {
   return {
@@ -43,7 +46,25 @@ function svpSocket(io) {
     if (io.engine.clientsCount > 2) {
       socket.disconnect();
     }
-    console.log("A client connected", socket.id);
+    console.log(
+      "A client connected to SVP : ",
+      socket.id,
+      socket.handshake.auth
+    );
+
+    // check auth.type and update the count
+    if (socket.handshake.auth.type === "experiment") {
+      console.log("Experiment server connected");
+      experimentServers++;
+    }
+
+    if (experimentServers > 1) {
+      console.log(
+        "Experiment server limit reached, Disconnecting the new server..."
+      );
+      socket.disconnect();
+      experimentServers--;
+    }
 
     // Periodically send data to the client
     const dataInterval = setInterval(() => {
