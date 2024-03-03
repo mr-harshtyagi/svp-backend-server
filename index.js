@@ -2,8 +2,17 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
+
+// Set up rate limiter: maximum of 100 requests per minute
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // limit each IP to 100 requests per windowMs
+});
 
 const app = express();
+// Apply the rate limiting middleware to all requests
+app.use(limiter);
 app.use(cors());
 
 const server = http.createServer(app);
@@ -68,7 +77,7 @@ io.on("connection", (socket) => {
     socket.emit("dataUpdate", responseData);
   }, 100);
 
-  // Handle messages from the client i.e. the frontend
+  // Handle messages from the client i.e. the frontend (SVP)
   socket.on("clientMessage", (message) => {
     console.log("Received message from frontend client:", message);
 
@@ -77,7 +86,7 @@ io.on("connection", (socket) => {
     motorSpeed = message.motorSpeed;
   });
 
-  // Handle messages from the raspberry pi
+  // Handle messages from the raspberry pi (SVP)
   socket.on("raspPiMessage", (message) => {
     // console.log("Received message from Rasp Pi:", message);
     temp = message.temp;
