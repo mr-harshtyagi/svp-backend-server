@@ -47,9 +47,9 @@ function svpSocket(io) {
   // Websocket connection
   io.on("connection", (socket) => {
     // limit the number of connections
-    if (io.engine.clientsCount > 4) {
-      socket.disconnect();
-    }
+    // if (io.engine.clientsCount > 4) {
+    //   socket.disconnect();
+    // }
     console.log(
       "A client connected to SVP : ",
       socket.id,
