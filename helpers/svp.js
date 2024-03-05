@@ -106,9 +106,11 @@ function svpSocket(io) {
 
     // webRTC signaling events
     socket.on("join room", (roomID) => {
+      console.log("Joining room: ", roomID, " Socket ID: ", socket.id);
       if (users[roomID]) {
         const length = users[roomID].length;
         if (length === 4) {
+          console.log("Room full");
           socket.emit("room full");
           return;
         }
@@ -123,6 +125,7 @@ function svpSocket(io) {
     });
 
     socket.on("sending signal", (payload) => {
+      console.log("Sending signal to: ", payload.userToSignal);
       io.to(payload.userToSignal).emit("user joined", {
         signal: payload.signal,
         callerID: payload.callerID,
@@ -130,6 +133,7 @@ function svpSocket(io) {
     });
 
     socket.on("returning signal", (payload) => {
+      console.log("Returning signal to: ", payload.callerID);
       io.to(payload.callerID).emit("receiving returned signal", {
         signal: payload.signal,
         id: socket.id,
