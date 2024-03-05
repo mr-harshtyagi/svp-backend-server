@@ -8,6 +8,9 @@ let motorSpeed = 0;
 let temp = 25;
 let acc = 0;
 
+// connections count
+let experimentServers = 0;
+
 // Function to return actual data received from the raspberry pi
 function getActualData() {
   return {
@@ -43,16 +46,34 @@ function svbSocket(io) {
     if (io.engine.clientsCount > 2) {
       socket.disconnect();
     }
-    console.log("A client connected", socket.id);
+    console.log(
+      "A client connected to SVP : ",
+      socket.id,
+      socket.handshake.auth
+    );
+
+    // check auth.type and update the count
+    if (socket.handshake.auth.type === "experiment") {
+      console.log("Experiment server connected");
+      experimentServers++;
+    }
+
+    if (experimentServers > 1) {
+      console.log(
+        "Experiment server limit reached, Disconnecting the new server..."
+      );
+      socket.disconnect();
+      experimentServers--;
+    }
 
     // Periodically send data to the client
     const dataInterval = setInterval(() => {
       const responseData = getRandomData();
-      socket.emit("dataUpdate", responseData);
+      socket.emit("svpDataUpdate", responseData);
     }, 100);
 
     // Handle messages from the client i.e. the frontend (SVP)
-    socket.on("clientMessage", (message) => {
+    socket.on("svpClientMessage", (message) => {
       console.log("Received message from frontend client:", message);
 
       mrValue = message.mrValue;
@@ -61,7 +82,7 @@ function svbSocket(io) {
     });
 
     // Handle messages from the raspberry pi (SVP)
-    socket.on("raspPiMessage", (message) => {
+    socket.on("svpRaspPiMessage", (message) => {
       // console.log("Received message from Rasp Pi:", message);
       temp = message.temp;
       acc = message.acc;
@@ -70,7 +91,7 @@ function svbSocket(io) {
         message.smaValue !== smaValue ||
         message.motorSpeed !== motorSpeed
       ) {
-        socket.emit("serverResponse", {
+        socket.emit("svpServerResponse", {
           mrValue: mrValue,
           smaValue: smaValue,
           motorSpeed: motorSpeed,

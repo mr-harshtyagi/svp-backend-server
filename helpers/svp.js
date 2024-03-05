@@ -38,12 +38,16 @@ function getRandomData() {
   return getActualData();
 }
 
+// webRTC related variables
+const users = {};
+const socketToRoom = {};
+
 // SVP Socket logic
 function svpSocket(io) {
   // Websocket connection
   io.on("connection", (socket) => {
     // limit the number of connections
-    if (io.engine.clientsCount > 2) {
+    if (io.engine.clientsCount > 4) {
       socket.disconnect();
     }
     console.log(
@@ -58,6 +62,7 @@ function svpSocket(io) {
       experimentServers++;
     }
 
+    // disconnect the new server if the limit is reached
     if (experimentServers > 1) {
       console.log(
         "Experiment server limit reached, Disconnecting the new server..."
@@ -66,7 +71,7 @@ function svpSocket(io) {
       experimentServers--;
     }
 
-    // Periodically send data to the client
+    // Periodically send data to the frontend client
     const dataInterval = setInterval(() => {
       const responseData = getRandomData();
       socket.emit("svpDataUpdate", responseData);
@@ -99,8 +104,46 @@ function svpSocket(io) {
       }
     });
 
+    // webRTC signaling events
+    socket.on("join room", (roomID) => {
+      if (users[roomID]) {
+        const length = users[roomID].length;
+        if (length === 4) {
+          socket.emit("room full");
+          return;
+        }
+        users[roomID].push(socket.id);
+      } else {
+        users[roomID] = [socket.id];
+      }
+      socketToRoom[socket.id] = roomID;
+      const usersInThisRoom = users[roomID].filter((id) => id !== socket.id);
+
+      socket.emit("all users", usersInThisRoom);
+    });
+
+    socket.on("sending signal", (payload) => {
+      io.to(payload.userToSignal).emit("user joined", {
+        signal: payload.signal,
+        callerID: payload.callerID,
+      });
+    });
+
+    socket.on("returning signal", (payload) => {
+      io.to(payload.callerID).emit("receiving returned signal", {
+        signal: payload.signal,
+        id: socket.id,
+      });
+    });
+
     // Handle disconnection
     socket.on("disconnect", () => {
+      const roomID = socketToRoom[socket.id];
+      let room = users[roomID];
+      if (room) {
+        room = room.filter((id) => id !== socket.id);
+        users[roomID] = room;
+      }
       console.log("A client disconnected");
       clearInterval(dataInterval);
       mrValue = 0;
