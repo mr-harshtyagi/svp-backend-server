@@ -40,7 +40,7 @@ function getRandomData() {
 
 // webRTC related variables
 const users = {};
-const socketToRoom = {};
+const socketToExperiment = {};
 
 // SVP Socket logic
 function svpSocket(io) {
@@ -105,36 +105,47 @@ function svpSocket(io) {
     });
 
     // webRTC signaling events
-    socket.on("join room", (roomID) => {
-      console.log("Joining room: ", roomID, " Socket ID: ", socket.id);
-      if (users[roomID]) {
-        const length = users[roomID].length;
-        if (length === 4) {
-          console.log("Room full");
-          socket.emit("room full");
+    socket.on("join-experiment", ({ experiment, clientType }) => {
+      console.log(
+        "Joining experiment: ",
+        experiment,
+        " Client type: ",
+        clientType,
+        " Socket ID: ",
+        socket.id
+      );
+
+      if (users[experiment]) {
+        const length = users[experiment].length;
+        if (length === 2) {
+          console.log("Max users connected at a time for this experiment");
+          socket.emit("experiment-full");
           return;
         }
-        users[roomID].push(socket.id);
+        users[experiment].push(socket.id);
       } else {
-        users[roomID] = [socket.id];
+        users[experiment] = [socket.id];
       }
-      socketToRoom[socket.id] = roomID;
-      const usersInThisRoom = users[roomID].filter((id) => id !== socket.id);
 
-      socket.emit("all users", usersInThisRoom);
+      socketToExperiment[socket.id] = experiment;
+      const usersInThisRoom = users[experiment].filter(
+        (id) => id !== socket.id
+      );
+
+      socket.emit("all-users", usersInThisRoom);
     });
 
-    socket.on("sending signal", (payload) => {
+    socket.on("sending-signal", (payload) => {
       console.log("Sending signal to: ", payload.userToSignal);
-      io.to(payload.userToSignal).emit("user joined", {
+      io.to(payload.userToSignal).emit("user-joined", {
         signal: payload.signal,
         callerID: payload.callerID,
       });
     });
 
-    socket.on("returning signal", (payload) => {
+    socket.on("returning-signal", (payload) => {
       console.log("Returning signal to: ", payload.callerID);
-      io.to(payload.callerID).emit("receiving returned signal", {
+      io.to(payload.callerID).emit("receiving-returned-signal", {
         signal: payload.signal,
         id: socket.id,
       });
@@ -142,11 +153,12 @@ function svpSocket(io) {
 
     // Handle disconnection
     socket.on("disconnect", () => {
-      const roomID = socketToRoom[socket.id];
-      let room = users[roomID];
+      // remove the disconnected user from the users[experiment] array
+      const experiment = socketToExperiment[socket.id];
+      let room = users[experiment];
       if (room) {
         room = room.filter((id) => id !== socket.id);
-        users[roomID] = room;
+        users[experiment] = room;
       }
       console.log("A client disconnected");
       clearInterval(dataInterval);
