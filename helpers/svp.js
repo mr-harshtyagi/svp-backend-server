@@ -88,7 +88,7 @@ function svpSocket(io) {
 
     // Handle messages from the raspberry pi (SVP)
     socket.on("svpRaspPiMessage", (message) => {
-      console.log("Received message from Rasp Pi:", message);
+      console.log("Received message from Rasp Pi:", message.acc);
       temp = message.temp;
       acc = message.acc;
       if (
