@@ -10,6 +10,7 @@ let acc = 0;
 
 // connections count
 let experimentServers = 0;
+let experimentStreamers = 0;
 
 // Function to return actual data received from the raspberry pi
 function getActualData() {
@@ -115,6 +116,23 @@ function svpSocket(io) {
         socket.id
       );
 
+      console.log("Existing Users: ", users);
+
+      // disconnect the new streamer if the limit is reached
+      if (clientType === "streamer") {
+        if (experimentStreamers > 1) {
+          console.log(
+            "Streamer limit reached, Disconnecting the new streamer..."
+          );
+          socket.disconnect();
+          socket.emit("disconnect-message", "You have been disconnected.");
+          experimentStreamers--;
+          return;
+        }
+      } else if (clientType === "viewer") {
+        experimentStreamers++;
+      }
+
       if (users[experiment]) {
         const length = users[experiment].length;
         if (length === 2) {
@@ -160,7 +178,7 @@ function svpSocket(io) {
         room = room.filter((id) => id !== socket.id);
         users[experiment] = room;
       }
-      console.log("A client disconnected");
+      console.log("A client disconnected", socket.id);
       clearInterval(dataInterval);
       mrValue = 0;
       smaValue = 0;
