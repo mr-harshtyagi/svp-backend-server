@@ -57,19 +57,19 @@ function svpSocket(io) {
     );
 
     // check auth.type and update the count
-    if (socket.handshake.auth.type === "experiment") {
-      console.log("Experiment server connected");
-      experimentServers++;
-    }
+    // if (socket.handshake.auth.type === "experiment") {
+    //   console.log("Experiment server connected");
+    //   experimentServers++;
+    // }
 
     // disconnect the new server if the limit is reached
-    if (experimentServers > 1) {
-      console.log(
-        "Experiment server limit reached, Disconnecting the new server..."
-      );
-      socket.disconnect();
-      experimentServers--;
-    }
+    // if (experimentServers > 1) {
+    //   console.log(
+    //     "Experiment server limit reached, Disconnecting the new server..."
+    //   );
+    //   socket.disconnect();
+    //   experimentServers--;
+    // }
 
     // Periodically send data to the frontend client
     const dataInterval = setInterval(() => {
