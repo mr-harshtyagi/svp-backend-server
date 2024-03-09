@@ -15,7 +15,7 @@ let experimentStreamers = 0;
 // Function to return actual data received from the raspberry pi
 function getActualData() {
   return {
-    status: "healthy",
+    status: temp > 80 ? (temp > 90 ? "overheat" : "warning") : "healthy",
     mrValue: mrValue,
     smaValue: smaValue,
     motorSpeed: motorSpeed,
@@ -27,16 +27,15 @@ function getActualData() {
 // Function to generate random data
 function getRandomData() {
   let status = temp > 80 ? (temp > 90 ? "overheat" : "warning") : "healthy";
-  // return {
-  //   status: status,
-  //   mrValue: mrValue,
-  //   smaValue: smaValue,
-  //   motorSpeed: motorSpeed,
-  //   temp: 50 + Math.floor(Math.random() * 20),
-  //   // temp: temp,
-  //   acc: Math.floor(Math.random() * 21) - 10,
-  // };
-  return getActualData();
+  return {
+    status: status,
+    mrValue: mrValue,
+    smaValue: smaValue,
+    motorSpeed: motorSpeed,
+    temp: 50 + Math.floor(Math.random() * 20),
+    // temp: temp,
+    acc: Math.floor(Math.random() * 21) - 10,
+  };
 }
 
 // webRTC related variables
@@ -74,7 +73,7 @@ function svpSocket(io) {
 
     // Periodically send data to the frontend client
     const dataInterval = setInterval(() => {
-      const responseData = getRandomData();
+      const responseData = getActualData();
       socket.emit("svpDataUpdate", responseData);
     }, 100);
 
