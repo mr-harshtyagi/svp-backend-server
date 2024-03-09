@@ -118,19 +118,19 @@ function svpSocket(io) {
       console.log("Existing Users: ", users);
 
       // disconnect the new streamer if the limit is reached
-      if (clientType === "streamer") {
-        if (experimentStreamers > 1) {
-          console.log(
-            "Streamer limit reached, Disconnecting the new streamer..."
-          );
-          socket.disconnect();
-          socket.emit("disconnect-message", "You have been disconnected.");
-          experimentStreamers--;
-          return;
-        }
-      } else if (clientType === "viewer") {
-        experimentStreamers++;
-      }
+      // if (clientType === "streamer") {
+      //   if (experimentStreamers > 1) {
+      //     console.log(
+      //       "Streamer limit reached, Disconnecting the new streamer..."
+      //     );
+      //     socket.disconnect();
+      //     socket.emit("disconnect-message", "You have been disconnected.");
+      //     experimentStreamers--;
+      //     return;
+      //   }
+      // } else if (clientType === "viewer") {
+      //   experimentStreamers++;
+      // }
 
       if (users[experiment]) {
         const length = users[experiment].length;
