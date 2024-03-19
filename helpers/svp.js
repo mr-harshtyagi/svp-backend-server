@@ -8,9 +8,11 @@ let motorSpeed = 0;
 let temp = 25;
 let acc = 0;
 
+let interval = 10;
+
 // connections count
-let experimentServers = 0;
-let experimentStreamers = 0;
+// let experimentServers = 0;
+// let experimentStreamers = 0;
 
 // Function to return actual data received from the raspberry pi
 function getActualData() {
@@ -75,7 +77,7 @@ function svpSocket(io) {
     const dataInterval = setInterval(() => {
       const responseData = getActualData();
       socket.emit("svpDataUpdate", responseData);
-    }, 100);
+    }, interval);
 
     // Handle messages from the client i.e. the frontend (SVP)
     socket.on("svpClientMessage", (message) => {

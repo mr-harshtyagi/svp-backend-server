@@ -18,7 +18,7 @@ app.use(limiter);
 app.use(cors());
 
 const server = http.createServer(app);
-const PORT = 4000;
+const PORT = 4000; // process.env.PORT || 4000
 const io = socketIo(server, {
   cors: {
     origin: [
